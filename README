@@ -1,0 +1,8 @@
+==== Proxy Server(s) w. Node.js ====
+
+This project aims to provide simple yet scalable
+implementations of Proxy Servers using Node.js and
+JS.Class in a TDD paradigm.
+
+Right now there is only one proxy, the Duplicating
+Proxy Server
