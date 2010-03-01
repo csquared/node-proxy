@@ -6,3 +6,27 @@ JS.Class in a TDD paradigm.
 
 Right now there is only one proxy, the Duplicating
 Proxy Server
+
+ ============   The Duplicating Proxy Server ================
+
+   Node.js makes event-driven server-side javascript FAST and 
+ simple - to a point.  The event-driven paradigm is tough to
+ grok when you come from a procedural world.  JS.Class lets
+ me write javascript like its Ruby.  And I love Ruby.
+
+ The idea of the duplicating proxy is simple: 
+  - listen for traffic on one port.
+  - forward the traffic to two servers
+  - reply with the response of one of the servers
+
+ You can run this file like so:
+   node dupProxy.js [proxy server] [responding server] [duplication server]
+   
+   A server is specified as either host:port or just port
+
+   ex node dupProxy.js 8000 3000 jimsmachine.com:3500
+
+   Would start the proxy on port 8000 on localhost.
+    This will forward tcp traffic to port 3000 at the localhost and
+    port 3500 at jimsmachine.com 
+
