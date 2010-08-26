@@ -1,6 +1,5 @@
-//requires
-process.mixin(GLOBAL, require("./lib/js.class/core"))
-process.mixin(GLOBAL, require("./lib/js.class/stdlib"))
+require("./lib/js.class/core")
+require("./lib/js.class/stdlib")
 sys = require('sys'),
 tcp = require('tcp')
 
