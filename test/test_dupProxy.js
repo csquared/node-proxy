@@ -1,5 +1,5 @@
 //includes
-process.mixin(GLOBAL, require('../dupProxy'));
+require('../dupProxy');
 assert = require('assert') 
 
 // Setup Vars
@@ -64,7 +64,7 @@ connection.addListener("end", function(data){
 
 // make sure we actually got to the callbacks
 process.addListener('exit', function(){ 
-//  sys.puts( "exiting") 
+  sys.puts( "exiting") 
   assert.ok(echo_callback)
   assert.ok(send_callback)
 })

@@ -1,47 +1,25 @@
 require("./lib/js.class/core")
 require("./lib/js.class/stdlib")
-sys = require('sys')
-net = require('tcp')
-tcp = net
+sys = require('sys'),
+net = require('net')
 
 /*************************************************************
-* ============   The Duplicating Proxy Server ================
+* ============   The Simple Proxy Server ================
 *
-*  This file is an implementation of a Duplicating Proxy server
+*  This file is an implementation of a Simple Proxy server
 * using Node.js and JS.class.
 *
-*   Node.js makes event-driven server-side javascript FAST and 
-* simple - to a point.  The event-driven paradigm is tough to
-* grok when you come from a procedural world.  JS.Class lets
-* me write javascript like its Ruby.  And I love Ruby.
-*
-* The idea of the duplicating proxy is simple: 
-*  - listen for traffic on one port.
-*  - forward the traffic to two servers
-*  - reply with the response of one of the servers
-*
-* You can run this file like so:
-*   node dupProxy.js [proxy server] [responding server] [duplication server]
-*   
-*   A server is specified as either host:port or just port
-*
-*   ex node dupProxy.js 8000 3000 jimsmachine.com:3500
-*
-*   Would start the proxy on port 8000 on localhost.
-*    This will forward net traffic to port 3000 at the localhost and
-*    port 3500 at jimsmachine.com 
 *
 *****************************************************************/
 
 
-DuplicatingProxy = new JS.Class({
+SimpleProxy = new JS.Class({
 
   // uses parseInput to figure out 
   // if we got host:port or port
-  initialize: function(proxy, main, dup){
+  initialize: function(proxy, main){
     this.proxy = this.parseInput(proxy);
     this.main  = this.parseInput(main);
-    this.dup   = this.parseInput(dup);
   },
 
   /*************************************
@@ -80,14 +58,13 @@ DuplicatingProxy = new JS.Class({
       socket.addListener("data", function (data){
          klass.proxy_respond(socket, data)
       });
-      socket.addListener("end", function(){ socket.close() });
+      socket.addListener("end", function(){ socket.end() });
     });
     
     //listen on proxy port
     this.server.listen(this.proxy[1], this.proxy[0]);
     sys.puts('Server running at http://'+this.proxy[0]+':'+this.proxy[1]+'');
-    sys.puts('Responding from '+this.main[1]+"\n"
-              +'Duping to ' + this.dup[1]);
+    sys.puts('Responding from '+this.main[1]); 
   }, //start()
 
 
@@ -102,15 +79,15 @@ DuplicatingProxy = new JS.Class({
        responder.write(data)
      })
      responder.addListener("data", function(responseData){
-       socket.write(responseData)
-       responder.close()
+       if(socket.readyState == 'open'){ 
+         socket.write(responseData)
+       }else{
+         responder.end()
+       }
      })
-
-     sys.puts("Duplicating to " + this.dup)
-     var duplicate = net.createConnection(this.dup[1], this.dup[0]);
-     duplicate.addListener("connect", function(){
-       duplicate.write(data)
-       duplicate.close()
+     responder.addListener("end", function(){
+       socket.end()
+       responder.end()
      })
   }, //proxy_respond
   
@@ -123,9 +100,8 @@ DuplicatingProxy = new JS.Class({
 process.argv.shift() //delete 'node'
 $0 = process.argv.shift() //delete filename
 if( $0 == __filename ){
-  proxy = new DuplicatingProxy(process.argv[0], 
-                               process.argv[1], 
-                               process.argv[2])
+  proxy = new SimpleProxy(process.argv[0], 
+                               process.argv[1])
   proxy.start()
   process.addListener('exit', function(){ 
     proxy.close()
