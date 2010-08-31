@@ -4,16 +4,16 @@ sys = require('sys'),
 net = require('net')
 
 /*************************************************************
-* ============   The Simple Proxy Server ================
+* ============   The Forwarding Proxy Server ================
 *
-*  This file is an implementation of a Simple Proxy server
+*  This file is an implementation of a Forwarding Proxy server
 * using Node.js and JS.class.
 *
 *
 *****************************************************************/
 
 
-SimpleProxy = new JS.Class({
+ForwardingProxy = new JS.Class({
 
   // uses parseInput to figure out 
   // if we got host:port or port
@@ -86,7 +86,7 @@ SimpleProxy = new JS.Class({
        }
      })
      responder.addListener("end", function(){
-       socket.end()
+       socket.destroy()
        responder.end()
      })
   }, //proxy_respond
@@ -100,7 +100,7 @@ SimpleProxy = new JS.Class({
 process.argv.shift() //delete 'node'
 $0 = process.argv.shift() //delete filename
 if( $0 == __filename ){
-  proxy = new SimpleProxy(process.argv[0], 
+  proxy = new ForwardingProxy(process.argv[0], 
                                process.argv[1])
   proxy.start()
   process.addListener('exit', function(){ 

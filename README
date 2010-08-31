@@ -4,15 +4,30 @@ This project aims to provide simple yet scalable
 implementations of Proxy Servers using Node.js and
 JS.Class in a TDD paradigm.
 
-Right now there is only one proxy, the Duplicating
-Proxy Server
-
- ============   The Duplicating Proxy Server ================
-
    Node.js makes event-driven server-side javascript FAST and 
  simple - to a point.  The event-driven paradigm is tough to
  grok when you come from a procedural world.  JS.Class lets
  me write javascript like its Ruby.  And I love Ruby.
+
+ A server is specified as either host:port or just port
+
+ ============   The Forwarding Proxy Server =================
+
+ This is the simplest and most basic of the proxies: forward
+traffic from one port to another.
+
+you invoke the Forwarding proxy like so:
+  node fwdProxy.js [from server] [to server]
+  
+  ex: node fwdProxy.js 8000 80
+
+  Would allow you to forward traffic from port 8000 to whatever
+you have going on at port 80 (most likely a web server).
+I created this proxy because I needed a quick, simple thing
+that would act as an HTTP proxy from the android emulator to
+my Ruby on Rails app.  It crapped out on streaming files.
+
+ ============   The Duplicating Proxy Server ================
 
  The idea of the duplicating proxy is simple: 
   - listen for traffic on one port.
@@ -21,12 +36,12 @@ Proxy Server
 
  You can run this file like so:
    node dupProxy.js [proxy server] [responding server] [duplication server]
-   
-   A server is specified as either host:port or just port
 
-   ex node dupProxy.js 8000 3000 jimsmachine.com:3500
+   ex: node dupProxy.js 8000 3000 jimsmachine.com:3500
 
    Would start the proxy on port 8000 on localhost.
     This will forward tcp traffic to port 3000 at the localhost and
     port 3500 at jimsmachine.com 
 
+
+FORK IT! 
